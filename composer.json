@@ -18,7 +18,8 @@
         "psr/container": "^2.0",
         "nilportugues/sql-query-builder": "^1.8",
         "doctrine/collections": "^1.6",
-        "monolog/monolog": "^2.3"
+        "monolog/monolog": "^2.3",
+        "symfony/console": "^5.3"
     },
     "autoload": {
         "psr-4": {
