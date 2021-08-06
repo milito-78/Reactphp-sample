@@ -45,6 +45,13 @@ trait FileMaker
             }
         }
 
+        if (file_exists(getcwd() . $path . $name.'.php'))
+        {
+            throw new class extends \Exception{
+
+            };
+        }
+
         $path = $this->checkSlash($path);
 
         $file = fopen(getcwd() . $path . $name.'.php' ,"w") or die("Error");

@@ -1,9 +1,8 @@
 <?php
 
 
-namespace App\Command;
+namespace App\Core\Command;
 
-use App\Core\Command\FileMaker;
 use Symfony\Component\Console\Command\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
@@ -22,8 +21,8 @@ class MakeController extends Command
     protected string $commandArgumentName = "name";
     protected string $commandArgumentDescription = "Controller Name";
 
-    protected  $commandOptionName = "Know";
-    protected  $commandOptionDescription = "I don't know what is this :)";
+    protected string $commandOptionName = "Know";
+    protected string $commandOptionDescription = "I don't know what is this :)";
 
 
     protected function configure()

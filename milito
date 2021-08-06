@@ -9,8 +9,9 @@ use Symfony\Component\Console\Application;
 $application = new Application();
 
 # add our commands
-$application->add(new \App\Command\MakeModel());
-$application->add(new \App\Command\MakeController());
-$application->add(new \App\Command\MakeMiddleware());
+$commands = (new \App\Command\Console())->commands();
+
+foreach ($commands as $command)
+    $application->add(new $command());
 
 $application->run();

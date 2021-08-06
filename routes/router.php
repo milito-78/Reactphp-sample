@@ -1,11 +1,8 @@
 <?php
 
-use App\Http\Middleware\AuthMiddleware;
-use App\Http\Middleware\TestMiddleware;
 use Psr\Http\Message\RequestInterface;
 use App\Core\Route\Route;
 
-class_alias(\App\Http\Middleware\Guard::class , 'GuardMiddleware');
 
 Route::group('x',function ()  {
 
@@ -18,7 +15,9 @@ Route::group('x',function ()  {
             return response(["index2"]);
         });
 
-        Route::GET('/index1/{x}/{y}',[\App\Http\Controller\HeaderController::class , "index"]);
+        Route::GET('/index1/{x}/{y}',function (RequestInterface $request,$x,$y) {
+            return response(["index21"]);
+        });
 
         Route::GET('/index12',function (RequestInterface $request) {
             return response(["index21"]);
@@ -30,6 +29,6 @@ Route::group('x',function ()  {
 
     });
 
-},[AuthMiddleware::class ]);
+});
 
 
