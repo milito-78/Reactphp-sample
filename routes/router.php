@@ -9,7 +9,8 @@ Route::group('x',function ()  {
     Route::group('/test',function () {
 
         Route::GET('/',function (RequestInterface $request) {
-            return response(["slash"]);
+
+            return response(["slashxx"]);
         });
         Route::GET('/index2',function (RequestInterface $request) {
             return response(["index2"]);
@@ -29,6 +30,6 @@ Route::group('x',function ()  {
 
     });
 
-});
+},[\App\Http\Middleware\AuthMiddleware::class]);
 
 
