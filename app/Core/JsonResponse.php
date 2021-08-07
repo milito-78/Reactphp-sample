@@ -31,7 +31,15 @@ final class JsonResponse extends Psr7Response{
             throw new \InvalidArgumentException('Invalid response body given');
         }
 
-        $header = ["Content-type" => "application/json"];
+        $header =
+            [
+                "Content-type" => "application/json" ,
+                "Access-Control-Allow-Origin" => '*' ,
+                "Access-Control-Allow-Credentials" => "true" ,
+                "Access-Control-Allow-Methods" => 'GET, PUT, POST, DELETE, OPTIONS',
+                "Access-Control-Allow-Headers" => 'Origin, Content-Type, X-Auth-Token , Authorization'
+            ];
+
         if ( is_array($headers))
             $header = array_merge($header,$headers);
 
@@ -40,6 +48,7 @@ final class JsonResponse extends Psr7Response{
             $header,
             $data
         );
+
     }
 
     public static function ok($data) : self

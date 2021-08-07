@@ -30,6 +30,6 @@ Route::group('x',function ()  {
 
     });
 
-},[\App\Http\Middleware\AuthMiddleware::class]);
+});
 
 
