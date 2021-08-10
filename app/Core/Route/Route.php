@@ -14,150 +14,30 @@ class Route
 
     public function GET($path , callable $function, array $middleware = [])
     {
-        $path = self::$uri . static::uriSlashCheck($path);
-        $prev_middleware    = static::$middleware;
-        $prev_middlewares   = static::$middlewares;
-
-        if (!static::$middleware)
-        {
-            static::$middleware = $function;
-        }
-
-        $middleware = array_merge( self::$middlewares, $middleware);
-
-        foreach ($middleware as $middle)
-        {
-            static::$middleware = new $middle(static::$middleware);
-        }
-
-        self::$router->get($path,static::$middleware);
-
-        static::$middleware = $prev_middleware;
-        static::$middlewares = $prev_middlewares;
+        self::makeRoute('get',$path , $function,$middleware);
     }
 
 
     public function POST($path , callable $function, array $middleware = [])
     {
-        $path = self::$uri . static::uriSlashCheck($path);
-        $prev_middleware    = static::$middleware;
-        $prev_middlewares   = static::$middlewares;
-
-        if (!static::$middleware)
-        {
-            static::$middleware = $function;
-        }
-
-        $middleware = array_merge( self::$middlewares, $middleware);
-
-        foreach ($middleware as $middle)
-        {
-            static::$middleware = new $middle(static::$middleware);
-        }
-
-        self::$router->post($path,static::$middleware);
-
-        static::$middleware = $prev_middleware;
-        static::$middlewares = $prev_middlewares;
+        self::makeRoute('post',$path , $function,$middleware);
     }
 
     public function PUT($path , callable $function, array $middleware = [])
     {
-        $path = self::$uri . static::uriSlashCheck($path);
-        $prev_middleware    = static::$middleware;
-        $prev_middlewares   = static::$middlewares;
-
-        if (!static::$middleware)
-        {
-            static::$middleware = $function;
-        }
-
-        $middleware = array_merge( self::$middlewares, $middleware);
-
-        foreach ($middleware as $middle)
-        {
-            static::$middleware = new $middle(static::$middleware);
-        }
-
-        self::$router->put($path,static::$middleware);
-
-        static::$middleware = $prev_middleware;
-        static::$middlewares = $prev_middlewares;
+        self::makeRoute('put',$path , $function,$middleware);
     }
 
 
     public function PATCH($path , callable $function, array $middleware = [])
     {
-        $path = self::$uri . static::uriSlashCheck($path);
-        $prev_middleware    = static::$middleware;
-        $prev_middlewares   = static::$middlewares;
-
-        if (!static::$middleware)
-        {
-            static::$middleware = $function;
-        }
-
-        $middleware = array_merge( self::$middlewares, $middleware);
-
-        foreach ($middleware as $middle)
-        {
-            static::$middleware = new $middle(static::$middleware);
-        }
-
-        self::$router->patch($path,static::$middleware);
-
-        static::$middleware = $prev_middleware;
-        static::$middlewares = $prev_middlewares;
+        self::makeRoute('patch',$path , $function,$middleware);
     }
 
 
     public function DELETE($path , callable $function, array $middleware = [])
     {
-        $path = self::$uri . static::uriSlashCheck($path);
-        $prev_middleware    = static::$middleware;
-        $prev_middlewares   = static::$middlewares;
-
-        if (!static::$middleware)
-        {
-            static::$middleware = $function;
-        }
-
-        $middleware = array_merge( self::$middlewares, $middleware);
-
-        foreach ($middleware as $middle)
-        {
-            static::$middleware = new $middle(static::$middleware);
-        }
-
-        self::$router->delete($path,static::$middleware);
-
-        static::$middleware = $prev_middleware;
-        static::$middlewares = $prev_middlewares;
-    }
-
-
-    public function OPTION($path , callable $function, array $middleware = [])
-    {
-        $path = self::$uri . static::uriSlashCheck($path);
-        $prev_middleware    = static::$middleware;
-        $prev_middlewares   = static::$middlewares;
-
-        if (!static::$middleware)
-        {
-            static::$middleware = $function;
-        }
-
-        $middleware = array_merge( self::$middlewares, $middleware);
-
-        foreach ($middleware as $middle)
-        {
-            static::$middleware = new $middle(static::$middleware);
-        }
-
-        self::$router->addRoute("options", $path,static::$middleware);
-
-        static::$middleware = $prev_middleware;
-        static::$middlewares = $prev_middlewares;
+        self::makeRoute('delete',$path , $function,$middleware);
     }
 
 
@@ -172,6 +52,7 @@ class Route
 
         self::$middlewares = array_merge(self::$middlewares , $middleware);
 
+        // routes inside group
         $function();
 
         static::$middleware = $prev_middleware;
@@ -200,6 +81,35 @@ class Route
             $path = substr($path,0,-1);
 
         return $path;
+    }
+
+
+    public static function makeRoute($type,$path,$function , $middleware)
+    {
+        $path = self::$uri . static::uriSlashCheck($path);
+        $prev_middleware    = static::$middleware;
+        $prev_middlewares   = static::$middlewares;
+
+        if (!static::$middleware)
+        {
+            static::$middleware = $function;
+        }
+
+        $middleware = array_merge( self::$middlewares, $middleware);
+
+        foreach ($middleware as $middle)
+        {
+            $constructor = explode(':',$middle);
+            $params = isset($constructor[1]) ? explode(',',$constructor[1]): [];
+
+            $name = $constructor[0];
+            static::$middleware = new $name(static::$middleware,...$params);
+        }
+
+        self::$router->{$type}($path,static::$middleware);
+
+        static::$middleware = $prev_middleware;
+        static::$middlewares = $prev_middlewares;
     }
 
 }

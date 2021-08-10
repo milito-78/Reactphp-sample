@@ -14,8 +14,10 @@ $mysql      = new \React\MySQL\Factory($loop);
 
 $container->add("db" , $mysql);
 
-require_once "app/Core/Route/MiddlewareAlias.php";
 
+$aliases = include_once "app/Http/Middleware/MiddlewareAlias.php";
+
+\App\Core\Route\Route::alias($aliases);
 
 \App\Core\Route\Route::init(
                                 new \FastRoute\RouteCollector(new \FastRoute\RouteParser\Std() ,

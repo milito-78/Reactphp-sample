@@ -1,5 +1,5 @@
 <?php
 
-$middleware_alias = [
+return [
     "auth" => \App\Http\Middleware\AuthMiddleware::class
 ];

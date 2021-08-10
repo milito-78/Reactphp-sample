@@ -7,6 +7,7 @@ namespace App\Command;
 use App\Core\Command\MakeController;
 use App\Core\Command\MakeMiddleware;
 use App\Core\Command\MakeModel;
+use App\Core\Command\MakeRequest;
 
 class Console
 {
@@ -15,7 +16,8 @@ class Console
         return [
             MakeController::class,
             MakeMiddleware::class,
-            MakeModel::class
+            MakeModel::class,
+            MakeRequest::class,
         ];
     }
 }

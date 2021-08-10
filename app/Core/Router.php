@@ -2,6 +2,8 @@
 namespace App\Core;
 
 use App\Core\Container\Container;
+use App\Core\Request\FormRequest;
+use App\Core\Route\ValidationTrait;
 use App\Exceptions\MethodNotAllowedException;
 use App\Exceptions\NotFoundException;
 use FastRoute\Dispatcher\GroupCountBased;
@@ -11,6 +13,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 
 final class Router{
+
+    use ValidationTrait;
 
     private GroupCountBased $dispatch;
 
@@ -34,9 +38,26 @@ final class Router{
                 throw new MethodNotAllowedException("Method '$req_method' does not supported. Supported method is '$method' ",405);
             case \FastRoute\Dispatcher::FOUND:
                 $params = array_values($route[2]);
+
+                $request = $this->checkRequestInstance($route[1], $request);
+
                 return $route[1]($request, ...$params);
         }
 
         throw new \LogicException("wrong");
     }
+
+
+    private function checkRequestInstance($route,$request)
+    {
+        $validation = $this->getController($route);
+
+        if ($validation)
+        {
+            $request = new $validation($request);
+        }
+
+        return $request;
+    }
+
 }

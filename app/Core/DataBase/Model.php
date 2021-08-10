@@ -14,7 +14,7 @@ use Exception;
 class Model extends DB
 {
 
-    protected $table = "table";
+    protected string $table = "table";
     private $props = [];
     /**
      * @var GenericBuilder|MySqlBuilder

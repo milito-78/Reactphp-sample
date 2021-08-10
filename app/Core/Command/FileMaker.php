@@ -23,6 +23,12 @@ trait FileMaker
                             "namespace" => "App\Http\Middleware",
                             "implement" => "App\Core\Route\Middleware",
                             "stub"      => "MiddlewareStub.txt"
+                        ],
+        'request' => [
+                            "base"      => "/app/Http/Request/",
+                            "namespace" => "App\Http\Request",
+                            "implement" => "App\Core\Request\FormRequest",
+                            "stub"      => "RequestStub.txt"
                         ]
         ];
 
@@ -43,13 +49,20 @@ trait FileMaker
                     mkdir(getcwd() . $path);
                 }
             }
+
+        }
+        else
+        {
+
+            if (!is_dir(getcwd() . $path ))
+            {
+                mkdir(getcwd() . $path);
+            }
         }
 
         if (file_exists(getcwd() . $path . $name.'.php'))
         {
-            throw new class extends \Exception{
-
-            };
+            throw new class extends \Exception{};
         }
 
         $path = $this->checkSlash($path);

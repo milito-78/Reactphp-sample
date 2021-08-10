@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use App\Core\JsonResponse;
 use React\Http\Message\ServerRequest;
 
+use Respect\Validation\Exceptions\NestedValidationException;
 use Throwable;
 
 final class ErrorHandler
@@ -16,9 +17,10 @@ final class ErrorHandler
         try {
             return $next($request);
         }
-        catch (ValidationException $exception){
-            $server->emit("error" , [$exception]);
-            return JsonResponse::validationError($exception->getMessage());
+        catch (NestedValidationException $exception)
+        {
+
+            return JsonResponse::validationError(array_values($exception->getMessages()));
         }
         catch (MethodNotAllowedException $exception){
             $server->emit("error" , [$exception]);

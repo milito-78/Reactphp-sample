@@ -10,9 +10,10 @@ use function is_string;
 
 final class JsonResponse extends Psr7Response{
 
+
     public function __construct(
         $status = 200,
-        $data = null,
+        $data = '',
         $headers = null
     )
     {
@@ -22,13 +23,20 @@ final class JsonResponse extends Psr7Response{
             $data = $data ? json_encode($data) : null;
         }
 
-        if ($data instanceof ReadableStreamInterface && !$data instanceof StreamInterface)
+        if ($status != 204)
         {
-            $data = new HttpBodyStream($data, null);
+            if ($data instanceof ReadableStreamInterface && !$data instanceof StreamInterface)
+            {
+                $data = new HttpBodyStream($data, null);
+            }
+            elseif (!is_string($data) && !($data instanceof StreamInterface))
+            {
+                throw new \InvalidArgumentException('Invalid response body given');
+            }
         }
-        elseif (!is_string($data) && !($data instanceof StreamInterface))
+        else
         {
-            throw new \InvalidArgumentException('Invalid response body given');
+            $data = null;
         }
 
         $header =
@@ -92,8 +100,10 @@ final class JsonResponse extends Psr7Response{
 
     public static function validationError($reason) : self
     {
+
         $title = "Validation Failed!";
-        return  new self(422, ErrorModel::error($title,$reason) );
+
+        return  new self(422, ErrorModel::error($title, $reason) );
     }
 
 }

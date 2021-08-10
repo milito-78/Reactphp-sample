@@ -11,11 +11,10 @@ use React\Http\Server;
 
 require "vendor/autoload.php";
 
-
-
 $loop = include_once "bootstrap/bootstrap.php";
 
-$option =  function (\Psr\Http\Message\RequestInterface $request , callable $next){
+
+$CorsOption =  function (\Psr\Http\Message\RequestInterface $request , callable $next){
     if (preg_match('/options/i',$request->getMethod()))
     {
         return json_no_content();
@@ -23,7 +22,7 @@ $option =  function (\Psr\Http\Message\RequestInterface $request , callable $nex
     return $next($request);
 };
 
-$server = new Server($loop, $option, new ErrorHandler(), new JsonRequestDecoder(), new Router(\App\Core\Route\Route::getCollector()));
+$server = new Server($loop, $CorsOption, new ErrorHandler(), new JsonRequestDecoder(), new Router(\App\Core\Route\Route::getCollector()));
 
 
 $socket = new \React\Socket\Server("127.0.0.1:3000", $loop);

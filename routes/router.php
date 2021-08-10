@@ -1,35 +1,18 @@
 <?php
 
-use Psr\Http\Message\RequestInterface;
+use App\Http\Controller\SplashController;
+use App\Http\Controller\v1\auth\LoginController;
+use App\Http\Controller\v1\auth\RegisterController;
 use App\Core\Route\Route;
 
 
-Route::group('x',function ()  {
+Route::get('splash', [SplashController::class , 'show']);
 
-    Route::group('/test',function () {
+Route::group('v1' , function (){
 
-        Route::GET('/',function (RequestInterface $request) {
-
-            return response(["slashxx"]);
-        });
-        Route::GET('/index2',function (RequestInterface $request) {
-            return response(["index2"]);
-        });
-
-        Route::GET('/index1/{x}/{y}',function (RequestInterface $request,$x,$y) {
-            return response(["index21"]);
-        });
-
-        Route::GET('/index12',function (RequestInterface $request) {
-            return response(["index21"]);
-        });
-
-        Route::POST('/index12/{test}',function (RequestInterface $request) {
-            return response(["post method"]);
-        });
-
+    Route::group('auth',function (){
+        Route::post('register'  , [RegisterController::class    , 'store']);
+        Route::post('login'     , [LoginController::class       , 'store']);
     });
 
-});
-
-
+},['auth:admin']);
