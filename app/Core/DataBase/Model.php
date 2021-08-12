@@ -84,7 +84,7 @@ class Model extends DB
 
         return $this->query($query , $values)
                                                 ->then(function (QueryResult $result){
-                                                    return $this->makeOneMap($result->resultRows[0]);
+                                                    return;
                                                 });
     }
 

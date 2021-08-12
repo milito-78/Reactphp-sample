@@ -19,8 +19,11 @@ final class ErrorHandler
         }
         catch (NestedValidationException $exception)
         {
-
             return JsonResponse::validationError(array_values($exception->getMessages()));
+        }
+        catch (ValidationException $exception)
+        {
+            return JsonResponse::validationError($exception->getMessage());
         }
         catch (MethodNotAllowedException $exception){
             $server->emit("error" , [$exception]);

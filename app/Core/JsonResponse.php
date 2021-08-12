@@ -56,7 +56,6 @@ final class JsonResponse extends Psr7Response{
             $header,
             $data
         );
-
     }
 
     public static function ok($data) : self

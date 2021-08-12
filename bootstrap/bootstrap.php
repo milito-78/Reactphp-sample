@@ -24,6 +24,8 @@ $aliases = include_once "app/Http/Middleware/MiddlewareAlias.php";
                                 new \FastRoute\DataGenerator\GroupCountBased())
                             );
 
+\App\Core\Validation\Factory::setCustomValidation();
+
 require_once "routes/router.php";
 
 return $loop;
