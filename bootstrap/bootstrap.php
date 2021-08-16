@@ -4,7 +4,7 @@
 $env = \Dotenv\Dotenv::createImmutable(__DIR__,"../.env");
 $env->load();
 
-
+date_default_timezone_set($_ENV["TIMEZONE"]);
 
 $container  = \App\Core\Container\Container::getInstance();
 

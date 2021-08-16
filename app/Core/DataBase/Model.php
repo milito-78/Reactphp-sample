@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\DataBase;
 
+use App\Core\Container\NotFoundException;
 use NilPortugues\Sql\QueryBuilder\Builder\GenericBuilder;
 use NilPortugues\Sql\QueryBuilder\Builder\MySqlBuilder;
 use NilPortugues\Sql\QueryBuilder\Manipulation\QueryInterface;
@@ -26,15 +27,21 @@ class Model extends DB
         parent::__construct();
         $this->builder = new GenericBuilder();
         $this->props = func_get_args();
-        $this->setProperties($this->props);
     }
 
-    public function setProperties($args)
+    public function __get($name)
     {
-        foreach ($args as $item)
-            foreach ($item as $key => $value) {
-                $this->{$key} = $value;
-            }
+        if (property_exists($this , $name)){
+            return $this->{$name};
+        }
+
+        $parsed_body = $this->props[0];
+        if (isset($parsed_body[$name]))
+        {
+            return $parsed_body[$name];
+        }
+
+        return null;
     }
 
 
@@ -71,20 +78,25 @@ class Model extends DB
 
     public function find($id)
     {
+
         $build = $this->builder
             ->select()
             ->setTable($this->table)
             ->where()
             ->equals("id" , $id)
             ->end()
-            ->limit(1,1);
+            ->limit(0,1);
 
         $query = $this->builder->write($build);
         $values = $this->builder->getValues();
 
         return $this->query($query , $values)
-                                                ->then(function (QueryResult $result){
-                                                    return;
+                                                ->then(function (QueryResult $result)
+                                                {
+                                                    if (!count($result->resultRows))
+                                                        throw new NotFoundException("not found");
+
+                                                    return $this->makeOneMap($result->resultRows[0]);
                                                 });
     }
 
@@ -104,7 +116,8 @@ class Model extends DB
         return $this->query($query , $values)
                                                 ->then(function (QueryResult $result){
                                                     if (!count($result->resultRows))
-                                                        throw new Exception("not found" , 404);
+                                                        throw new NotFoundException("not found");
+
                                                     return $this->makeOneMap($result->resultRows[0]);
                                                 });
     }
@@ -203,6 +216,7 @@ class Model extends DB
     protected function makeOneMap($data) : object
     {
         $class = $this->getMapClassName();
+
         return new $class($data);
     }
 

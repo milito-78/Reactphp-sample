@@ -21,7 +21,9 @@
         "monolog/monolog": "^2.3",
         "symfony/console": "^5.3",
         "christoph-kluge/reactphp-http-cors-middleware": "^2.0",
-        "respect/validation": "^2.2"
+        "respect/validation": "^2.2",
+        "firebase/php-jwt": "^5.4",
+        "nesbot/carbon": "^2.51"
     },
     "autoload": {
         "psr-4": {

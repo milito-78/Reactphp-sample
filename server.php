@@ -31,7 +31,7 @@ $server->listen($socket);
 
 
 $logger = new Logger('errors');
-$logger->pushHandler(new StreamHandler(__DIR__.'/storage/logs/app.logs', Logger::DEBUG));
+$logger->pushHandler(new StreamHandler(__DIR__.'/storage/logs/app.log', Logger::DEBUG));
 $logger->pushHandler(new FirePHPHandler());
 
 

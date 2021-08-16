@@ -91,6 +91,12 @@ final class JsonResponse extends Psr7Response{
         return new self(401,ErrorModel::error($title,$message));
     }
 
+    public static function Aborted($message) : self
+    {
+        $title = "Forbidden error!";
+        return new self(403,ErrorModel::error($title,$message));
+    }
+
     public static function internalServerError(string $reason) : self
     {
         $title = "Server Error!";

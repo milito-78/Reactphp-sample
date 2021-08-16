@@ -33,9 +33,9 @@ class Customer extends Model
         return $this->query($query , $values)
                                                     ->then(function (QueryResult $result){
                                                         if (!@$result->resultRows[0])
-                                                            return false;
+                                                            return null;
 
-                                                        return true;
+                                                        return $this->makeOneMap($result->resultRows[0]);
                                                     });
 
 

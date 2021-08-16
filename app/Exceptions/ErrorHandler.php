@@ -4,7 +4,6 @@ namespace App\Exceptions;
 
 use App\Core\JsonResponse;
 use React\Http\Message\ServerRequest;
-
 use Respect\Validation\Exceptions\NestedValidationException;
 use Throwable;
 
@@ -39,6 +38,11 @@ final class ErrorHandler
             $server->emit("error" , [$exception]);
 
             return JsonResponse::unAuthorized($exception->getMessage());
+        }
+        catch (ForbiddenException $exception){
+            $server->emit("error" , [$exception]);
+
+            return JsonResponse::Aborted($exception->getMessage());
         }
         catch (Throwable $error){
             $server->emit("error" , [$error]);
