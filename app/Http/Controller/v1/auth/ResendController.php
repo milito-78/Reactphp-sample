@@ -4,14 +4,14 @@ namespace App\Http\Controller\v1\auth;
 use App\Core\JsonResponse;
 use App\Exceptions\ValidationException;
 use App\Http\Controller\Controller;
-use App\Http\Request\v1\Auth\VerifyRequest;
+use App\Http\Request\v1\Auth\ResendRequest;
 use App\jwt\JWTHandler;
 use App\Model\v1\Customer;
 use Carbon\Carbon;
 
-class VerifyAccountController extends Controller
+class ResendController extends Controller
 {
-    public function update(VerifyRequest $request)
+    public function update(ResendRequest $request)
     {
         $customer = new Customer();
 
@@ -27,32 +27,30 @@ class VerifyAccountController extends Controller
                     throw new ValidationException("Your account has already been verified. Login with email and password" , 422);
                 }
 
-                if (Carbon::now()->diffInSeconds(Carbon::createFromTimeString($res->updated_at)) > 120 || $res->verify_code !=  $request->verify_code)
+                if (Carbon::now()->diffInSeconds(Carbon::createFromTimeString($res->updated_at)) < 120)
                 {
-                    throw new ValidationException("Your verify code is invalid." , 422);
+                    throw new ValidationException("Verify code send in 2 minutes later" , 422);
                 }
 
                 return $res;
 
             })->then(function ($record) use ($request,$customer)
             {
-                return $customer->update($record->id,[
-                        "verify_date" => time()
-                    ])
-                    ->then(function () use ($record)
-                    {
-                        $jwt = JWTHandler::encode($record);
+                return $customer->generateVerifyCode()->then(function ($code) use ($record,$customer)
+                {
+                    if (!$code){
+                        throw new \Exception("There is an error during verify code generate",500);
+                    }
 
-                        return response(
-                            [
-                                "data" =>[
-                                    "id"        => (int)$record->id,
-                                    "name"      => $record->name,
-                                    "token"     => $jwt
-                                ],
-                                "message" => "login successfully"
-                            ]);
-                    });
+                    return $customer->update($record->id,
+                        [
+                            "verify_code"       => $code,
+                        ])->then(function (){
+                            return JsonResponse::created(["message" => "New verify code send successfully"]);
+                        });
+
+                });
+
             })
             ->otherwise(function (ValidationException $exception)
             {

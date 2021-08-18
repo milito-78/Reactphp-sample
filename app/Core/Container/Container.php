@@ -4,8 +4,10 @@ use App\Core\Container\ContainerException;
 use App\Core\Container\NotFoundException;
 use Evenement\EventEmitter;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use React\MySQL\Factory;
 use ReflectionMethod;
+use RingCentral\Psr7\Request;
 
 class Container implements ContainerInterface
 {
@@ -42,7 +44,7 @@ class Container implements ContainerInterface
             throw new ContainerException('$id must be a string');
         }
 
-        if (isset($this->definitions[$id])) {
+        if (isset($this->definitions[$id]) && $id != "request") {
             return;
         }
 
@@ -60,6 +62,11 @@ class Container implements ContainerInterface
             return;
         }
 
+        if ($concrete instanceof ServerRequestInterface) {
+            $this->definitions[$id] = $concrete;
+            return;
+        }
+        var_dump("inctance");
         $this->definitions[$id] = $this->build($concrete);
     }
 

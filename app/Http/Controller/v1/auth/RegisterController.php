@@ -19,6 +19,10 @@ class RegisterController extends Controller
         return $customer->checkEmailExists($request->email)
             ->then(function ($res)
             {
+                if (!$res){
+                    return $res;
+                }
+
                 if ((!$res || !$res->verify_date) && Carbon::now()->diffInSeconds(Carbon::createFromTimeString($res->updated_at)) > 120)
                 {
                      return $res;
@@ -54,7 +58,7 @@ class RegisterController extends Controller
                                 ]);
                         }
                         return $customer->then(function (){
-                            return JsonResponse::created("Register done. Verify your account with an verify code we sent to your email.");
+                            return JsonResponse::created(["message" => "Register done. Verify your account with an verify code we sent to your email."]);
                         });
 
                     });

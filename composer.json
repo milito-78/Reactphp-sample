@@ -23,7 +23,8 @@
         "christoph-kluge/reactphp-http-cors-middleware": "^2.0",
         "respect/validation": "^2.2",
         "firebase/php-jwt": "^5.4",
-        "nesbot/carbon": "^2.51"
+        "nesbot/carbon": "^2.51",
+      "ext-redis": "*"
     },
     "autoload": {
         "psr-4": {
@@ -34,6 +35,7 @@
       ]
     },
     "require-dev": {
-        "mp091689/dump-die": "^1.0"
+        "mp091689/dump-die": "^1.0",
+        "seregazhuk/php-watcher": "^0.5.2"
     }
 }

@@ -2,20 +2,27 @@
 namespace App\Model\v1;
 
 use App\Core\DataBase\Model;
-use http\Exception;
+use Firebase\JWT\JWT;
 use React\MySQL\QueryResult;
 use React\Promise\Deferred;
-use React\Promise\Promise;
-use function React\Promise\reject;
-use function React\Promise\resolve;
+
 
 class Customer extends Model
 {
     protected string $table = "customers";
 
     //TODO singleton
-    private static self $customer ;
+    static private ?Customer $customer = null ;
 
+    public static function setUser($user)
+    {
+        self::$customer = $user;
+    }
+
+    public static function getUser()
+    {
+        return self::$customer;
+    }
 
     public function checkEmailExists($email)
     {
@@ -37,7 +44,6 @@ class Customer extends Model
 
                                                         return $this->makeOneMap($result->resultRows[0]);
                                                     });
-
 
     }
 

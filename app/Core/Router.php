@@ -10,6 +10,7 @@ use FastRoute\Dispatcher\GroupCountBased;
 use FastRoute\RouteCollector;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use React\Http\Message\ServerRequest;
 
 
 final class Router{
@@ -41,6 +42,16 @@ final class Router{
 
                 $request = $this->checkRequestInstance($route[1], $request);
 
+                $container = Container::getInstance();
+
+                try
+                {
+                    $container->add("request" ,$request);
+                }
+                catch (\Exception $exception)
+                {
+                }
+
                 return $route[1]($request, ...$params);
         }
 
@@ -50,6 +61,7 @@ final class Router{
 
     private function checkRequestInstance($route,$request)
     {
+
         $validation = $this->getController($route);
 
         if ($validation)

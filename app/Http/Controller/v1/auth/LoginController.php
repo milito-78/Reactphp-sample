@@ -36,16 +36,24 @@ class LoginController extends Controller
                     }
                     $jwt = JWTHandler::encode($record);
 
-                    return response([
-                        "id"        => (int)$record->id,
-                        "name"      => $record->name,
-                        "token"     => $jwt
+                    return response(
+                        [
+                            "data" =>[
+                                        "id"        => (int)$record->id,
+                                        "name"      => $record->name,
+                                        "token"     => $jwt
+                                    ],
+                            "message" => "login successfully"
                     ]);
 
                 })
                 ->otherwise(function (ValidationException $exception)
                 {
                     return JsonResponse::validationError($exception->getMessage());
+                })
+                ->otherwise(function (ForbiddenException $exception)
+                {
+                    return JsonResponse::Aborted($exception->getMessage());
                 })
                 ->otherwise(function (NotFoundException $exception)
                 {

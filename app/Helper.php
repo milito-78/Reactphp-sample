@@ -1,6 +1,9 @@
 <?php
 
 
+use App\Core\Container\Container;
+use App\Model\v1\Customer;
+
 if (!function_exists("response"))
 {
     function response($data = null , $status = 200 , $headers = null): \App\Core\JsonResponse
@@ -25,20 +28,51 @@ if (!function_exists("collect"))
     }
 }
 
-/*
-if (!function_exists("config"))
+
+if (!function_exists("getCustomer"))
 {
-    function config()
+    function getCustomer()
     {
-        $args = func_get_args();
-        if (!count($args))
-        {
-
-        }
+        return Customer::getUser();
     }
-}*/
+}
+
+if (!function_exists("setCustomer"))
+{
+    function setCustomer($customer)
+    {
+        Customer::setUser($customer);
+    }
+}
 
 
+
+if (!function_exists('GetApiToken'))
+{
+
+    /**
+     * @return array|string|null
+     */
+
+    function GetApiToken()
+    {
+        $request = request();
+
+        if ( $request->hasHeader('Authorization'  ) )
+            return @$request->getHeader('Authorization' )[0]??null;
+        else
+            return null;
+    }
+}
+
+if (! function_exists('request')) {
+
+    function request() : \Psr\Http\Message\ServerRequestInterface
+    {
+        $container = Container::getInstance();
+        return $container->get("request");
+    }
+}
 
 if (!function_exists("abort")){
     function abort($status = 500 , $message = "Server Error")

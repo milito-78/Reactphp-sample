@@ -43,6 +43,7 @@ class Route
 
     public function GROUP($prefix , callable $function, array $middleware = [])
     {
+
         $previousGroupPrefix = self::$uri;
 
         self::$uri = $previousGroupPrefix . static::uriSlashCheck($prefix);
@@ -55,8 +56,9 @@ class Route
         // routes inside group
         $function();
 
-        static::$middleware = $prev_middleware;
+        static::$middlewares = $prev_middleware;
         self::$uri = $previousGroupPrefix;
+
     }
 
 

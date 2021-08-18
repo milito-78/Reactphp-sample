@@ -17,7 +17,13 @@ trait ValidationTrait
      */
     private function findController($middleware)
     {
+        if ($middleware instanceof \Closure)
+        {
+            return new \ReflectionFunction($middleware);
+        }
+
         if (is_array($middleware)){
+
             return new ReflectionMethod($middleware[0], $middleware[1]);
         }
         return $this->findController($middleware->middleware);
@@ -31,13 +37,16 @@ trait ValidationTrait
         $controller = $this->findController($middleware);
 
         $params = $controller->getParameters();
+
         $validation = null;
         foreach ($params as $f){
-            $z = new ReflectionClass(@$f->getClass()->name);
+            if ($f->getClass()) {
+                $z = new ReflectionClass(@$f->getClass()->name);
 
-            if(in_array(ValidationRequest::class,$z->getInterfaceNames()) || @$f->getClass()->name == Request::class){
-                $validation = $f->getClass()->name;
-                break;
+                if (in_array(ValidationRequest::class, $z->getInterfaceNames()) || @$f->getClass()->name == Request::class) {
+                    $validation = $f->getClass()->name;
+                    break;
+                }
             }
         }
 

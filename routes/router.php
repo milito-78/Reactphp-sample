@@ -4,15 +4,33 @@ use App\Http\Controller\SplashController;
 use App\Http\Controller\v1\auth\LoginController;
 use App\Http\Controller\v1\auth\RegisterController;
 use App\Core\Route\Route;
+use App\Http\Controller\v1\auth\ResendController;
+use App\Http\Controller\v1\auth\VerifyAccountController;
+use App\jwt\JWTHandler;
 
+Route::get('jwt_generate[/{id}]' , function (\Psr\Http\Message\RequestInterface $request ,$id = null){
 
-Route::get('splash', [SplashController::class , 'show']);
+    if (!$id){
+
+    }
+
+    $jwt = JWTHandler::encode(null);
+
+    return response(["token" => $jwt]);
+});
+
+Route::group('v1' , function (){
+    Route::get('splash', [SplashController::class , 'show']);
+},['auth:splash']);
+
 
 Route::group('v1' , function (){
 
     Route::group('auth',function (){
-        Route::post('register'  , [RegisterController::class    , 'store']);
-        Route::post('login'     , [LoginController::class       , 'store']);
+        Route::post('register'  , [RegisterController::class            , 'store']);
+        Route::post('login'     , [LoginController::class               , 'store']);
+        Route::put('verify'     , [VerifyAccountController::class       , 'update']);
+        Route::put('resend'     , [ResendController::class              , 'update']);
     });
 
-},['auth:admin']);
+},['auth:guest']);
