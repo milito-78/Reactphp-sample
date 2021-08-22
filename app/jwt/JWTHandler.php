@@ -41,7 +41,7 @@ class JWTHandler
         $pay_load = [
             "id"        => (int)@$user->id,
             "name"      => @$user->name,
-            "exp"       => time() + self::EXPIRED_AT
+            "exp"       => time() + self::EXPIRED_AT,
         ];
 
         return JWT::encode($pay_load,$jwt->jwt_secret);

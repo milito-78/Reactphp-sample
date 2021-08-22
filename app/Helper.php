@@ -105,3 +105,11 @@ if (!function_exists("abort")){
     }
 }
 
+if (! function_exists('per_page')) {
+
+    function per_page(): int
+    {
+        return 20;
+    }
+}
+
